@@ -187,21 +187,42 @@ public class GUIGgv extends JFrame {
 			return;
 		}
 		try {
+			String originalMaDD =(String) tableModel.getValueAt(selectedRow, 0);
 			String MaDD = txtID.getText();
 			String HoTen = txtName.getText();
 			String gt = (String) cmbGT.getSelectedItem();
 			String DonVi = txtDonVi.getText();
 			int SoTC = Integer.parseInt(txtSoCT.getText());
 			
-			XLGV gv = new XLGV();
-			gv.update(MaDD, HoTen, gt, DonVi, SoTC);
+			Giangvien gv = new Giangvien(MaDD,HoTen, gt, DonVi, SoTC);
+			XLGV xl = new XLGV();
 			
-			tableModel.setValueAt(HoTen, selectedRow , 1 );
-			tableModel.setValueAt(gt, selectedRow, 2);
-			tableModel.setValueAt(DonVi, selectedRow, 3);
-			tableModel.setValueAt(SoTC, selectedRow, 4);
-			JOptionPane.showMessageDialog(this, "Giang Vien da cap nhat thanh cong");
+			if (!originalMaDD.equals(MaDD) && xl.checkID(MaDD)) {
+	            JOptionPane.showMessageDialog(this, "ID mới đã tồn tại. Không thể thay đổi thành ID này.");
+	            return;
+	        }
+	     
 			
+			if(!xl.checkID(MaDD))
+			{
+				JOptionPane.showMessageDialog(this, "Mã giảng viên không tồn tại trong cơ sở dữ liệu.");
+	            return;
+			}
+			
+			boolean check = xl.update(gv);
+			//gv.update(MaDD, HoTen, gt, DonVi, SoTC);
+			if(check )
+			{
+				
+				JOptionPane.showMessageDialog(this, "Cap nhat thanh cong");
+				tableModel.setValueAt(HoTen, selectedRow , 1 );
+				tableModel.setValueAt(gt, selectedRow, 2);
+				tableModel.setValueAt(DonVi, selectedRow, 3);
+				tableModel.setValueAt(SoTC, selectedRow, 4);
+			}else {
+				JOptionPane.showMessageDialog(this, "Cap nhat that bai");
+				
+			}
 		}catch(SQLException e)
 		{
 			e.printStackTrace();

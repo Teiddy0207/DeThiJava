@@ -104,18 +104,34 @@ public class XLGV {
 		
 		
 	}
-	
-	public void update(String MaDD, String Hoten, String GioiTinh,String Donvi, int SoCt) throws SQLException
+	//String MaDD, String Hoten, String GioiTinh,String Donvi, int SoCt
+	public boolean update(Giangvien gv) throws SQLException
 	{
 		Connection conn = getCon();
 		String query = "Update tbGiangvien set Hoten = ? , GioiTinh = ?, Donvi = ?, SoCt = ? WHERE MaDD = ?";
 		PreparedStatement ps = conn.prepareStatement(query);
-		ps.setString(1, Hoten);
-		 ps.setString(2, GioiTinh);
-		 ps.setString(3, Donvi);
-		 ps.setInt(4, SoCt);
-		ps.setString(5, MaDD);
-		ps.executeUpdate();
+		ps.setString(1, gv.getHoTen());
+		ps.setString(2, gv.getGioiTinh());
+		ps.setString(3, gv.getDonVi());
+		ps.setInt(4, gv.getSoCt());
+		ps.setString(5, gv.getMaDD());
+		return	ps.executeUpdate() > 0; 
+		
 }
+	public boolean checkID (String MaDD)
+	{
+		try {
+			Connection conn = getCon();
+			String query = "select MaDD from tbGiangvien where MaDD = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, MaDD);
+			ResultSet rs = ps.executeQuery();
+
+			return rs.next();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+		return false;
+	}
 	
 }
